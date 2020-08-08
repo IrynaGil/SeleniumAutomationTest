@@ -49,10 +49,29 @@ public class SearchAndCountTest extends BaseTest {
         Double totalAmountLessThan = 0.0;
 
         for (WebElement product: productList) {
-            Double regularPrice = 0.0;
+
+            Double priceValue = null;
+
+            try {
+                WebElement specialPriceSpan = product.findElement(By.className("special-price"));
+                WebElement specialPrice = specialPriceSpan.findElement(By.className("price"));
+                priceValue = Double.valueOf(specialPrice.getText().substring(1));
+            } catch (Exception e) {
+                //e.printStackTrace();
+            }
+
+            if (priceValue == null) {
+                WebElement spanPrice = product.findElement(By.className("price"));
+                priceValue = Double.valueOf(spanPrice.getText().substring(1));
+            }
+
+            if (priceValue < lessThan) {
+                totalAmountLessThan += priceValue;
+            }
 
         }
 
+        System.out.println(totalAmountLessThan);
 
     }
 }
